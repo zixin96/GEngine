@@ -46,7 +46,22 @@ uint32_t indices[] =
     // indices data
 };
 ebo = IndexBuffer::Create(sizeof(indices) / sizeof(uint32_t),indices);
-vao->SetIndexBuffer(m_QuadIB);
+vao->SetIndexBuffer(ebo);
 ```
 
 Ref: macro for shared pointers
+
+
+## References
+
+[1] Hazel. Hazel Engine by TheCherno. 
+    Used under Apache-2.0 License.
+    https://github.com/TheCherno/Hazel.git
+
+[2] OpenGL. OpenGL support library so you can just dive in and write OpenGL code by TheCherno.
+    Used under Apache-2.0 License.
+    https://github.com/TheCherno/OpenGL.git
+
+[3] Procedural-Landmass-Generation. Procedural Landmass Generation in Unity by SebLague.
+    Used under MIT License.
+    https://github.com/SebLague/Procedural-Landmass-Generation.git
