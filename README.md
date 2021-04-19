@@ -18,7 +18,7 @@ Open `L-System`for L-System.
 
 ## Features
 
-- An elegant way to set buffer objects: verbose OpenGL setup is abtracted away!
+- A **much** more elegant way to set buffer objects: verbose OpenGL setup is abtracted away!
 
 ```c++
 Ref<VertexArray> vao;
