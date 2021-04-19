@@ -30,22 +30,24 @@ void ExampleLayer::OnAttach()
 	m_QuadVA = VertexArray::Create();
 
 	float vertices[] = {
-		-1.5f, -0.5f, 0.0f, 0.18f, 0.6f, 0.96f, 1.0f,
-		 -0.5f, -0.5f, 0.0f, 0.18f, 0.6f, 0.96f, 1.0f,
-		 -0.5f,  0.5f, 0.0f, 0.18f, 0.6f, 0.96f, 1.0f,
-		-1.5f,  0.5f, 0.0f, 0.18f, 0.6f, 0.96f, 1.0f,
+		-1.5f, -0.5f, 0.0f, 0.18f,	0.6f, 0.96f, 1.0f,	0.0f, 0.0f,			0.0f,
+		 -0.5f, -0.5f, 0.0f, 0.18f, 0.6f, 0.96f, 1.0f,	1.0f, 0.0f,			0.0f,
+		 -0.5f,  0.5f, 0.0f, 0.18f, 0.6f, 0.96f, 1.0f,	1.0f, 1.0f,			0.0f,
+		-1.5f,  0.5f, 0.0f, 0.18f,	0.6f, 0.96f, 1.0f,	0.0f, 1.0f,			0.0f,
 
-		0.5f, -0.5f, 0.0f, 1.0f, 0.93f, 0.24f, 1.0f,
-		 1.5f, -0.5f, 0.0f,1.0f, 0.93f, 0.24f, 1.0f,
-		 1.5f,  0.5f, 0.0f,1.0f, 0.93f, 0.24f, 1.0f,
-		0.5f,  0.5f, 0.0f, 1.0f, 0.93f, 0.24f, 1.0f
+		0.5f, -0.5f, 0.0f, 1.0f, 0.93f, 0.24f, 1.0f,	0.0f, 0.0f,			1.0f,
+		 1.5f, -0.5f, 0.0f,1.0f, 0.93f, 0.24f, 1.0f,	1.0f, 0.0f,			1.0f,
+		 1.5f,  0.5f, 0.0f,1.0f, 0.93f, 0.24f, 1.0f,	1.0f, 1.0f,			1.0f,
+		0.5f,  0.5f, 0.0f, 1.0f, 0.93f, 0.24f, 1.0f,	0.0f, 1.0f,			1.0f
 
 	};
 
 	m_QuadVB = VertexBuffer::Create(sizeof(vertices), vertices);
 	m_QuadVB->SetLayout({
 		{ ShaderDataType::Float3, "a_Position"},
-		{ ShaderDataType::Float4, "a_Color"}
+		{ ShaderDataType::Float4, "a_Color"},
+		{ ShaderDataType::Float2, "a_TexCoord"},
+		{ ShaderDataType::Float, "a_TexIndex"}
     });
 	m_QuadVA->AddVertexBuffer(m_QuadVB);
 
@@ -57,6 +59,14 @@ void ExampleLayer::OnAttach()
 
 	m_QuadIB = IndexBuffer::Create(sizeof(indices) / sizeof(uint32_t), indices);
 	m_QuadVA->SetIndexBuffer(m_QuadIB);
+
+
+	m_SnowTexture = Texture2D::Create("assets/textures/snow_field_aerial_col_1k.png");
+	m_BrickTexture = Texture2D::Create("assets/textures/brick_floor_003_diffuse_1k.png");
+
+	glUseProgram(m_Shader->GetRendererID());
+	int samplers[2] = { 0 , 1 };
+	m_Shader->SetIntArray("u_Textures", samplers, 2);
 }
 
 void ExampleLayer::OnDetach()
@@ -94,6 +104,9 @@ void ExampleLayer::OnUpdate(Timestep ts)
 	m_Shader->SetMat4("u_ViewProjection", m_CameraController.GetCamera().GetViewProjectionMatrix());
 
 	m_QuadVA->Bind();
+
+	m_SnowTexture->Bind(0);
+	m_BrickTexture->Bind(1);
 
 	m_Shader->SetMat4("u_Transform", glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, 0.0f)));
 	glDrawElements(GL_TRIANGLES, 12, GL_UNSIGNED_INT, nullptr);

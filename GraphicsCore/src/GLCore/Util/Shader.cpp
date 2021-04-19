@@ -106,32 +106,25 @@ namespace GLCore::Utils {
 
 		m_RendererID = program;
 	}
+	// TODO: Use only Set instead?
 
     void Shader::SetMat4(const std::string& name, const glm::mat4& value)
     {
-        
-
         UploadMat4(name, value);
     }
 
     void Shader::SetVec4(const std::string& name, const glm::vec4& value)
     {
-        
-
         UploadVec4(name, value);
     }
 
     void Shader::SetVec3(const std::string& name, const glm::vec3& value)
     {
-        
-
         UploadVec3(name, value);
     }
 
     void Shader::SetInt(const std::string& name, int value)
     {
-        
-
         UploadInt(name, value);
     }
 
@@ -142,8 +135,6 @@ namespace GLCore::Utils {
 
     void Shader::SetFloat(const std::string& name, float value)
     {
-        
-
         UploadFloat(name, value);
     }
 
