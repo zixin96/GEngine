@@ -107,4 +107,73 @@ namespace GLCore::Utils {
 		m_RendererID = program;
 	}
 
+    void Shader::SetMat4(const std::string& name, const glm::mat4& value)
+    {
+        
+
+        UploadMat4(name, value);
+    }
+
+    void Shader::SetVec4(const std::string& name, const glm::vec4& value)
+    {
+        
+
+        UploadVec4(name, value);
+    }
+
+    void Shader::SetVec3(const std::string& name, const glm::vec3& value)
+    {
+        
+
+        UploadVec3(name, value);
+    }
+
+    void Shader::SetInt(const std::string& name, int value)
+    {
+        
+
+        UploadInt(name, value);
+    }
+
+    void Shader::SetIntArray(const std::string& name, int* value, uint32_t count)
+    {
+        UploadIntArray(name, value, count);
+    }
+
+    void Shader::SetFloat(const std::string& name, float value)
+    {
+        
+
+        UploadFloat(name, value);
+    }
+
+    void Shader::UploadMat4(const std::string& name, const glm::mat4& value) const
+    {
+        glUniformMatrix4fv(glGetUniformLocation(m_RendererID, name.c_str()), 1, GL_FALSE, &value[0][0]);
+    }
+
+    void Shader::UploadVec4(const std::string& name, const glm::vec4& value) const
+    {
+        glUniform4fv(glGetUniformLocation(m_RendererID, name.c_str()), 1, &value[0]);
+    }
+
+    void Shader::UploadVec3(const std::string& name, const glm::vec3& value) const
+    {
+        glUniform3fv(glGetUniformLocation(m_RendererID, name.c_str()), 1, &value[0]);
+    }
+
+    void Shader::UploadInt(const std::string& name, int value) const
+    {
+        glUniform1i(glGetUniformLocation(m_RendererID, name.c_str()), value);
+    }
+
+    void Shader::UploadIntArray(const std::string& name, int* value, uint32_t count) const
+    {
+        glUniform1iv(glGetUniformLocation(m_RendererID, name.c_str()), count, value);
+    }
+
+    void Shader::UploadFloat(const std::string& name, float value) const
+    {
+        glUniform1f(glGetUniformLocation(m_RendererID, name.c_str()), value);
+    }
 }
