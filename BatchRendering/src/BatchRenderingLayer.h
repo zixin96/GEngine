@@ -3,11 +3,11 @@
 #include <GLCore.h>
 #include <GLCoreUtils.h>
 
-class ExampleLayer : public GLCore::Layer
+class BatchRenderingLayer : public GLCore::Layer
 {
 public:
-	ExampleLayer();
-	virtual ~ExampleLayer();
+	BatchRenderingLayer();
+	virtual ~BatchRenderingLayer();
 
 	virtual void OnAttach() override;
 	virtual void OnDetach() override;

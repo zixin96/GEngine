@@ -1,5 +1,5 @@
 #include "GLCore.h"
-#include "ExampleLayer.h"
+#include "BatchRenderingLayer.h"
 
 using namespace GLCore;
 
@@ -9,7 +9,7 @@ public:
 	Example()
 		: Application("OpenGL Examples")
 	{
-		PushLayer(new ExampleLayer());
+		PushLayer(new BatchRenderingLayer());
 	}
 };
 

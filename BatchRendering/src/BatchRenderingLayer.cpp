@@ -1,20 +1,20 @@
-#include "ExampleLayer.h"
+#include "BatchRenderingLayer.h"
 
 using namespace GLCore;
 using namespace GLCore::Utils;
 
-ExampleLayer::ExampleLayer()
+BatchRenderingLayer::BatchRenderingLayer()
 	: m_CameraController(16.0f / 9.0f)
 {
 
 }
 
-ExampleLayer::~ExampleLayer()
+BatchRenderingLayer::~BatchRenderingLayer()
 {
 
 }
 
-void ExampleLayer::OnAttach()
+void BatchRenderingLayer::OnAttach()
 {
 	EnableGLDebugging();
 
@@ -69,11 +69,11 @@ void ExampleLayer::OnAttach()
 	m_Shader->SetIntArray("u_Textures", samplers, 2);
 }
 
-void ExampleLayer::OnDetach()
+void BatchRenderingLayer::OnDetach()
 {
 }
 
-void ExampleLayer::OnEvent(Event& event)
+void BatchRenderingLayer::OnEvent(Event& event)
 {
 	m_CameraController.OnEvent(event);
 
@@ -92,7 +92,7 @@ void ExampleLayer::OnEvent(Event& event)
 		});
 }
 
-void ExampleLayer::OnUpdate(Timestep ts)
+void BatchRenderingLayer::OnUpdate(Timestep ts)
 {
 	m_CameraController.OnUpdate(ts);
 
@@ -112,7 +112,7 @@ void ExampleLayer::OnUpdate(Timestep ts)
 	glDrawElements(GL_TRIANGLES, 12, GL_UNSIGNED_INT, nullptr);
 }
 
-void ExampleLayer::OnImGuiRender()
+void BatchRenderingLayer::OnImGuiRender()
 {
 	ImGui::Begin("Controls");
 	if (ImGui::ColorEdit4("Square Base Color", glm::value_ptr(m_SquareBaseColor)))
