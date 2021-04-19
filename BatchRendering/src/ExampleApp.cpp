@@ -3,11 +3,11 @@
 
 using namespace GLCore;
 
-class Example : public Application
+class BatchRenderingApp : public Application
 {
 public:
-	Example()
-		: Application("OpenGL Examples")
+	BatchRenderingApp()
+		: Application("Batch Rendering")
 	{
 		PushLayer(new BatchRenderingLayer());
 	}
@@ -15,6 +15,6 @@ public:
 
 int main()
 {
-	std::unique_ptr<Example> app = std::make_unique<Example>();
+	std::unique_ptr<BatchRenderingApp> app = std::make_unique<BatchRenderingApp>();
 	app->Run();
 }
