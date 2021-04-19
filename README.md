@@ -16,10 +16,9 @@ Open `SDF.sln` for SDF.
 
 Open `L-System`for L-System.
 
-## Features
+## Notes
 
-- A **much** more elegant way to set buffer objects: verbose OpenGL setup is abtracted away!
-
+- A **much** more elegant way to set buffer objects: NO MORE manually setting offsets and strides! 
 ```c++
 Ref<VertexArray> vao;
 Ref<VertexBuffer> vbo;
