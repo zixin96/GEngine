@@ -31,10 +31,15 @@ void ExampleLayer::OnAttach()
 	glBindVertexArray(m_QuadVA);
 
 	float vertices[] = {
-		-0.5f, -0.5f, 0.0f,
-		 0.5f, -0.5f, 0.0f,
-		 0.5f,  0.5f, 0.0f,
-		-0.5f,  0.5f, 0.0f
+		-1.5f, -0.5f, 0.0f,
+		 -0.5f, -0.5f, 0.0f,
+		 -0.5f,  0.5f, 0.0f,
+		-1.5f,  0.5f, 0.0f,
+
+		0.5f, -0.5f, 0.0f,
+		 1.5f, -0.5f, 0.0f,
+		 1.5f,  0.5f, 0.0f,
+		0.5f,  0.5f, 0.0f
 	};
 
 	glCreateBuffers(1, &m_QuadVB);
@@ -44,7 +49,10 @@ void ExampleLayer::OnAttach()
 	glEnableVertexAttribArray(0);
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 3, 0);
 
-	uint32_t indices[] = { 0, 1, 2, 2, 3, 0 };
+	uint32_t indices[] = { 
+		0, 1, 2, 2, 3, 0 ,
+		4, 5, 6, 6, 7, 4
+	};
 	glCreateBuffers(1, &m_QuadIB);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_QuadIB);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
@@ -85,14 +93,13 @@ void ExampleLayer::OnUpdate(Timestep ts)
 
 	glUseProgram(m_Shader->GetRendererID());
 
-	int location = glGetUniformLocation(m_Shader->GetRendererID(), "u_ViewProjection");
-	glUniformMatrix4fv(location, 1, GL_FALSE, glm::value_ptr(m_CameraController.GetCamera().GetViewProjectionMatrix()));
-
-	location = glGetUniformLocation(m_Shader->GetRendererID(), "u_Color");
-	glUniform4fv(location, 1, glm::value_ptr(m_SquareColor));
+	m_Shader->SetMat4("u_ViewProjection", m_CameraController.GetCamera().GetViewProjectionMatrix());
+	m_Shader->SetVec4("u_Color", m_SquareColor);
 
 	glBindVertexArray(m_QuadVA);
-	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr);
+
+	m_Shader->SetMat4("u_Transform", glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, 0.0f)));
+	glDrawElements(GL_TRIANGLES, 12, GL_UNSIGNED_INT, nullptr);
 }
 
 void ExampleLayer::OnImGuiRender()
