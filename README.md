@@ -49,12 +49,4 @@ ebo = IndexBuffer::Create(sizeof(indices) / sizeof(uint32_t),indices);
 vao->SetIndexBuffer(m_QuadIB);
 ```
 
-
-
-VBO: vertex buffer object
-
-VAO: vertex array object
-
-EBO: element buffer object/index buffer object
-
 Ref: macro for shared pointers
