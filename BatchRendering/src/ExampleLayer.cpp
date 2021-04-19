@@ -27,42 +27,40 @@ void ExampleLayer::OnAttach()
 		"assets/shaders/test.frag.glsl"
 	);
 
-	glCreateVertexArrays(1, &m_QuadVA);
-	glBindVertexArray(m_QuadVA);
+	m_QuadVA = VertexArray::Create();
 
 	float vertices[] = {
-		-1.5f, -0.5f, 0.0f,
-		 -0.5f, -0.5f, 0.0f,
-		 -0.5f,  0.5f, 0.0f,
-		-1.5f,  0.5f, 0.0f,
+		-1.5f, -0.5f, 0.0f, 0.18f, 0.6f, 0.96f, 1.0f,
+		 -0.5f, -0.5f, 0.0f, 0.18f, 0.6f, 0.96f, 1.0f,
+		 -0.5f,  0.5f, 0.0f, 0.18f, 0.6f, 0.96f, 1.0f,
+		-1.5f,  0.5f, 0.0f, 0.18f, 0.6f, 0.96f, 1.0f,
 
-		0.5f, -0.5f, 0.0f,
-		 1.5f, -0.5f, 0.0f,
-		 1.5f,  0.5f, 0.0f,
-		0.5f,  0.5f, 0.0f
+		0.5f, -0.5f, 0.0f, 1.0f, 0.93f, 0.24f, 1.0f,
+		 1.5f, -0.5f, 0.0f,1.0f, 0.93f, 0.24f, 1.0f,
+		 1.5f,  0.5f, 0.0f,1.0f, 0.93f, 0.24f, 1.0f,
+		0.5f,  0.5f, 0.0f, 1.0f, 0.93f, 0.24f, 1.0f
+
 	};
 
-	glCreateBuffers(1, &m_QuadVB);
-	glBindBuffer(GL_ARRAY_BUFFER, m_QuadVB);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+	m_QuadVB = VertexBuffer::Create(sizeof(vertices), vertices);
+	m_QuadVB->SetLayout({
+		{ ShaderDataType::Float3, "a_Position"},
+		{ ShaderDataType::Float4, "a_Color"}
+    });
+	m_QuadVA->AddVertexBuffer(m_QuadVB);
 
-	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(float) * 3, 0);
 
 	uint32_t indices[] = { 
 		0, 1, 2, 2, 3, 0 ,
 		4, 5, 6, 6, 7, 4
 	};
-	glCreateBuffers(1, &m_QuadIB);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_QuadIB);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+
+	m_QuadIB = IndexBuffer::Create(sizeof(indices) / sizeof(uint32_t), indices);
+	m_QuadVA->SetIndexBuffer(m_QuadIB);
 }
 
 void ExampleLayer::OnDetach()
 {
-	glDeleteVertexArrays(1, &m_QuadVA);
-	glDeleteBuffers(1, &m_QuadVB);
-	glDeleteBuffers(1, &m_QuadIB);
 }
 
 void ExampleLayer::OnEvent(Event& event)
@@ -94,9 +92,8 @@ void ExampleLayer::OnUpdate(Timestep ts)
 	glUseProgram(m_Shader->GetRendererID());
 
 	m_Shader->SetMat4("u_ViewProjection", m_CameraController.GetCamera().GetViewProjectionMatrix());
-	m_Shader->SetVec4("u_Color", m_SquareColor);
 
-	glBindVertexArray(m_QuadVA);
+	m_QuadVA->Bind();
 
 	m_Shader->SetMat4("u_Transform", glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, 0.0f)));
 	glDrawElements(GL_TRIANGLES, 12, GL_UNSIGNED_INT, nullptr);

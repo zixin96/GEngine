@@ -18,7 +18,9 @@ private:
 	GLCore::Utils::Shader* m_Shader;
 	GLCore::Utils::OrthographicCameraController m_CameraController;
 	
-	GLuint m_QuadVA, m_QuadVB, m_QuadIB;
+	GLCore::Utils::Ref<GLCore::Utils::VertexArray> m_QuadVA;
+	GLCore::Utils::Ref<GLCore::Utils::VertexBuffer> m_QuadVB;
+	GLCore::Utils::Ref<GLCore::Utils::IndexBuffer> m_QuadIB;
 
 	glm::vec4 m_SquareBaseColor = { 0.8f, 0.2f, 0.3f, 1.0f };
 	glm::vec4 m_SquareAlternateColor = { 0.2f, 0.3f, 0.8f, 1.0f };
