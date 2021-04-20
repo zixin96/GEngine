@@ -2,8 +2,8 @@
 
 #include <glm/glm.hpp>
 #include "OrthographicCamera.h"
+#include "PerspectiveCamera.h"
 #include "Texture.h"
-
 namespace GLCore::Utils
 {
     class Renderer 
@@ -12,6 +12,8 @@ namespace GLCore::Utils
         static void Init();
         static void Shutdown();
         static void BeginScene(const OrthographicCamera& camera);
+        static void BeginScene(const PerspectiveCamera& camera);
+
         static void BeginBatch();
         static void EndBatch();
         static void Flush();

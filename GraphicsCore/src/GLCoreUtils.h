@@ -9,4 +9,5 @@
 
 #include "GLCore/Util/OrthographicCamera.h"
 #include "GLCore/Util/OrthographicCameraController.h"
+#include "GLCore/Util/PerspectiveCamera.h"
 #include "GLCore/Util/OpenGLDebug.h"

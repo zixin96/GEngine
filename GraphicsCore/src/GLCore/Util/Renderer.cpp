@@ -229,4 +229,12 @@ namespace GLCore::Utils
             camera.GetViewProjectionMatrix());
     }
 
+    void Renderer::BeginScene(const PerspectiveCamera& camera)
+    {
+        glm::mat4 viewProj = camera.GetViewProjection();
+        s_Data.TextureShader->Bind();
+        s_Data.TextureShader->SetMat4("u_ViewProjection",
+            viewProj);
+    }
+
 }
