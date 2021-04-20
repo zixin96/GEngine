@@ -50,6 +50,8 @@ vao->SetIndexBuffer(ebo);
 
 Ref: macro for shared pointers
 
+- Creating static vbo: `VertexBuffer::Create(two arguments)`. dynamic vbo: `VertexBuffer::Create(single argument)`
+
 
 ## References
 

@@ -140,8 +140,6 @@ namespace GLCore::Utils
 
     void OpenGLVertexArray::SetIndexBuffer(const Ref<IndexBuffer>& IndexBuffer)
     {
-       
-
         glBindVertexArray(m_RendererID);
         IndexBuffer->Bind();
         m_IndexBuffer = IndexBuffer;
