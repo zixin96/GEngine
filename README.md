@@ -66,3 +66,13 @@ Ref: macro for shared pointers
 [3] Procedural-Landmass-Generation. Procedural Landmass Generation in Unity by SebLague.
     Used under MIT License.
     https://github.com/SebLague/Procedural-Landmass-Generation.git
+
+[4] scratchapixel. Procedural Generation of Virtual Worlds by Jean-Colas Prunier.
+    https://www.scratchapixel.com/lessons/procedural-generation-virtual-worlds/procedural-patterns-noise-part-1
+
+
+# ProTerrain
+
+**Signed** perlin noise
+
+
