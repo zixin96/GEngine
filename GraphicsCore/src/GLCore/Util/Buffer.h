@@ -1,4 +1,5 @@
 #pragma once
+#include "GLCore/Core/Log.h"
 
 namespace GLCore::Utils 
 {

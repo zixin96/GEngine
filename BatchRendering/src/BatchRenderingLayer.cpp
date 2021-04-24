@@ -26,8 +26,8 @@ void BatchRenderingLayer::OnAttach()
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	Renderer::Init();
 
-//     m_SnowTexture = Texture2D::Create("assets/textures/snow_field_aerial_col_1k.png");
-//     m_BrickTexture = Texture2D::Create("assets/textures/brick_floor_003_diffuse_1k.png");
+     m_SnowTexture = Texture2D::Create("assets/textures/snow_field_aerial_col_1k.png");
+     m_BrickTexture = Texture2D::Create("assets/textures/brick_floor_003_diffuse_1k.png");
 }
 
 void BatchRenderingLayer::OnDetach()
@@ -50,6 +50,14 @@ void BatchRenderingLayer::OnUpdate(Timestep ts)
 	Renderer::BeginScene(m_PerspectiveCamera);
     Renderer::ResetStats();
     Renderer::BeginBatch();
+
+    for (int y = 0; y < 5; y++)
+    {
+        for (int x = 0; x < 5; x++)
+        {
+            Renderer::DrawQuad({ x, y, 1.0f }, { 1.0f, 1.0f }, (x + y) % 2 == 0 ? m_SnowTexture : m_BrickTexture);
+        }
+    }
 
     for (float y = -10.0f; y < 10.0f; y += 0.25f)
     {

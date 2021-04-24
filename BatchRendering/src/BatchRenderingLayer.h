@@ -18,8 +18,8 @@ private:
 		
 	GLCore::Utils::PerspectiveCamera m_PerspectiveCamera;
 
-	//GLCore::Utils::Ref<GLCore::Utils::Texture2D> m_SnowTexture;
-	//GLCore::Utils::Ref<GLCore::Utils::Texture2D> m_BrickTexture;
+	GLCore::Utils::Ref<GLCore::Utils::Texture2D> m_SnowTexture;
+	GLCore::Utils::Ref<GLCore::Utils::Texture2D> m_BrickTexture;
 
 	//glm::vec2 m_QuadPositon = { -1.5f, -0.5f };
 };

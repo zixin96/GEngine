@@ -142,8 +142,8 @@ namespace GLCore::Utils
         const glm::vec3 vertexPositions[] = {
             {position.x,            position.y,             position.z},
             {position.x + size.x,   position.y,             position.z},
-            {position.x + size.x,   position.y + size.y,    position.z},
-            {position.x,            position.y + size.y,    position.z}
+            {position.x + size.x,   position.y ,    position.z + size.y},
+            {position.x,            position.y ,    position.z + size.y}
         };
         const float textureIndex = 0.0f;
 
