@@ -19,6 +19,7 @@ namespace GLCore::Utils
 
         uint32_t m_NumFaces;
         uint32_t numVertices;
+        uint32_t* verticesArray;
     };
 }
 

@@ -37,7 +37,7 @@ PerlinNoise::PerlinNoise(const uint32_t& seed /*= 1996*/)
     }
 }
 
-float PerlinNoise::eval(const glm::vec3& point, glm::vec3 derivative) const
+float PerlinNoise::eval(const glm::vec3& point, glm::vec3& derivative) const
 {
     int xi0 = ((int)std::floor(point.x)) & m_TableSizeMask;
     int yi0 = ((int)std::floor(point.y)) & m_TableSizeMask;
@@ -145,6 +145,58 @@ float PerlinNoise::eval(const glm::vec3& point) const
     float f = lerp(c, d, v);
 
     return lerp(e, f, w); // g
+}
+
+void PerlinNoise::ComputeDeriv(const glm::vec3& point, glm::vec3& derivative) const
+{
+    int xi0 = ((int)std::floor(point.x)) & m_TableSizeMask;
+    int yi0 = ((int)std::floor(point.y)) & m_TableSizeMask;
+    int zi0 = ((int)std::floor(point.z)) & m_TableSizeMask;
+
+    int xi1 = (xi0 + 1) & m_TableSizeMask;
+    int yi1 = (yi0 + 1) & m_TableSizeMask;
+    int zi1 = (zi0 + 1) & m_TableSizeMask;
+
+    float tx = point.x - ((int)std::floor(point.x));
+    float ty = point.y - ((int)std::floor(point.y));
+    float tz = point.z - ((int)std::floor(point.z));
+
+    float u = quintic(tx);
+    float v = quintic(ty);
+    float w = quintic(tz);
+
+    // generate vectors going from the grid points to p
+    float x0 = tx, x1 = tx - 1;
+    float y0 = ty, y1 = ty - 1;
+    float z0 = tz, z1 = tz - 1;
+
+    float a = gradientDotV(hash(xi0, yi0, zi0), x0, y0, z0);
+    float b = gradientDotV(hash(xi1, yi0, zi0), x1, y0, z0);
+    float c = gradientDotV(hash(xi0, yi1, zi0), x0, y1, z0);
+    float d = gradientDotV(hash(xi1, yi1, zi0), x1, y1, z0);
+    float e = gradientDotV(hash(xi0, yi0, zi1), x0, y0, z1);
+    float f = gradientDotV(hash(xi1, yi0, zi1), x1, y0, z1);
+    float g = gradientDotV(hash(xi0, yi1, zi1), x0, y1, z1);
+    float h = gradientDotV(hash(xi1, yi1, zi1), x1, y1, z1);
+
+    float du = quinticDeriv(tx);
+    float dv = quinticDeriv(ty);
+    float dw = quinticDeriv(tz);
+
+    // Analytical approach to compute noise value and normal
+
+    float k0 = a;
+    float k1 = (b - a);
+    float k2 = (c - a);
+    float k3 = (e - a);
+    float k4 = (a + d - b - c);
+    float k5 = (a + f - b - e);
+    float k6 = (a + g - c - e);
+    float k7 = (b + c + e + h - a - d - f - g);
+
+    derivative.x = du * (k1 + k4 * v + k5 * w + k7 * v * w);
+    derivative.y = dv * (k2 + k4 * u + k6 * w + k7 * v * w);
+    derivative.z = dw * (k3 + k5 * u + k6 * v + k7 * v * w);
 }
 
 uint8_t PerlinNoise::hash(const int& x, const int& y, const int& z) const

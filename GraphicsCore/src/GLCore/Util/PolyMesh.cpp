@@ -12,7 +12,7 @@ namespace GLCore::Utils
         numVertices = numVerticesAlongX * numVerticesAlongZ;
 
         m_VerticesPos = new glm::vec3[numVertices];
-        m_Normals = new glm::vec3[numVertices];
+        m_Normals = new glm::vec3[numVertices]; 
         m_TextureCoords = new glm::vec2[numVertices];
 
         float invSubdivisionWidth = 1.f / subdivisionWidth;
@@ -41,6 +41,17 @@ namespace GLCore::Utils
                 vertexIndex++;
             }
         }
+
+        verticesArray = new uint32_t[4 * m_NumFaces];
+        for (uint32_t j = 0, k = 0; j < subdivisionHeight; ++j) {
+            for (uint32_t i = 0; i < subdivisionWidth; ++i) {
+                verticesArray[k] = j * (subdivisionWidth + 1) + i;
+                verticesArray[k + 1] = j * (subdivisionWidth + 1) + i + 1;
+                verticesArray[k + 2] = (j + 1) * (subdivisionWidth + 1) + i + 1;
+                verticesArray[k + 3] = (j + 1) * (subdivisionWidth + 1) + i;
+                k += 4;
+            }
+        }
         
     }
 
@@ -50,6 +61,8 @@ namespace GLCore::Utils
         delete[] m_TextureCoords;
         delete[] m_Normals;
         delete[] m_Indices;
+
+        delete[] verticesArray;
     }
 
     void PolyMesh::AddTriangle(uint32_t a, uint32_t b, uint32_t c)
