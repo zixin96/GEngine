@@ -25,7 +25,7 @@ namespace GLCore::Utils
 
     void MeshRenderer::Init()
     {
-        s_Data.Mesh = new PolyMesh(3, 3, 100, 100);
+        s_Data.Mesh = new PolyMesh(5, 5, 100, 100);
 
         // Initialize noise and noise map
         int seed = 1996;
