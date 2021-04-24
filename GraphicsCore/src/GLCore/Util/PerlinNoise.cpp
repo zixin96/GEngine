@@ -13,7 +13,7 @@ PerlinNoise::PerlinNoise(const uint32_t& seed /*= 1996*/)
     std::uniform_real_distribution<float> distribution;
     auto dice = std::bind(distribution, generator);
     for (uint32_t i = 0; i < m_TableSize; ++i) {
-        // we need to make sure gradients are uniformly distributed
+        // we need to make sure m_Gradients are uniformly distributed
         float theta = acos(2 * dice() - 1);
         float phi = 2 * dice() * glm::pi<float>();
 
@@ -89,6 +89,62 @@ float PerlinNoise::eval(const glm::vec3& point, glm::vec3 derivative) const
     derivative.z = dw * (k3 + k5 * u + k6 * v + k7 * v * w);
 
     return k0 + k1 * u + k2 * v + k3 * w + k4 * u * v + k5 * u * w + k6 * v * w + k7 * u * v * w;
+}
+
+float PerlinNoise::eval(const glm::vec3& point) const
+{
+    int xi0 = ((int)std::floor(point.x)) & m_TableSizeMask;
+    int yi0 = ((int)std::floor(point.y)) & m_TableSizeMask;
+    int zi0 = ((int)std::floor(point.z)) & m_TableSizeMask;
+
+    int xi1 = (xi0 + 1) & m_TableSizeMask;
+    int yi1 = (yi0 + 1) & m_TableSizeMask;
+    int zi1 = (zi0 + 1) & m_TableSizeMask;
+
+    float tx = point.x - ((int)std::floor(point.x));
+    float ty = point.y - ((int)std::floor(point.y));
+    float tz = point.z - ((int)std::floor(point.z));
+
+    float u = quintic(tx);
+    float v = quintic(ty);
+    float w = quintic(tz);
+
+    // m_Gradients at the corner of the cell
+    const glm::vec3& c000 = m_Gradients[hash(xi0, yi0, zi0)];
+    const glm::vec3& c100 = m_Gradients[hash(xi1, yi0, zi0)];
+    const glm::vec3& c010 = m_Gradients[hash(xi0, yi1, zi0)];
+    const glm::vec3& c110 = m_Gradients[hash(xi1, yi1, zi0)];
+
+    const glm::vec3& c001 = m_Gradients[hash(xi0, yi0, zi1)];
+    const glm::vec3& c101 = m_Gradients[hash(xi1, yi0, zi1)];
+    const glm::vec3& c011 = m_Gradients[hash(xi0, yi1, zi1)];
+    const glm::vec3& c111 = m_Gradients[hash(xi1, yi1, zi1)];
+
+    // generate vectors going from the grid points to point
+    float x0 = tx, x1 = tx - 1;
+    float y0 = ty, y1 = ty - 1;
+    float z0 = tz, z1 = tz - 1;
+
+    glm::vec3 p000 = glm::vec3(x0, y0, z0);
+    glm::vec3 p100 = glm::vec3(x1, y0, z0);
+    glm::vec3 p010 = glm::vec3(x0, y1, z0);
+    glm::vec3 p110 = glm::vec3(x1, y1, z0);
+
+    glm::vec3 p001 = glm::vec3(x0, y0, z1);
+    glm::vec3 p101 = glm::vec3(x1, y0, z1);
+    glm::vec3 p011 = glm::vec3(x0, y1, z1);
+    glm::vec3 p111 = glm::vec3(x1, y1, z1);
+
+    // linear interpolation
+    float a = lerp(dot(c000, p000), dot(c100, p100), u);
+    float b = lerp(dot(c010, p010), dot(c110, p110), u);
+    float c = lerp(dot(c001, p001), dot(c101, p101), u);
+    float d = lerp(dot(c011, p011), dot(c111, p111), u);
+
+    float e = lerp(a, b, v);
+    float f = lerp(c, d, v);
+
+    return lerp(e, f, w); // g
 }
 
 uint8_t PerlinNoise::hash(const int& x, const int& y, const int& z) const

@@ -8,6 +8,7 @@ public:
     PerlinNoise(const uint32_t& seed = 1996);
     ~PerlinNoise() = default;
     float eval(const glm::vec3& point, glm::vec3 derivative) const;
+    float eval(const glm::vec3& point) const;
 private:
     uint8_t hash(const int& x, const int& y, const int& z) const;
     float gradientDotV(uint8_t permutation, float x, float y, float z) const;
