@@ -1,14 +1,15 @@
 #include "glpch.h"
 #include "Renderer.h"
 #include <GLCoreUtils.h>
+#include "GLCore/Util/PerlinNoise.h"
 
 namespace GLCore::Utils
 {
     static const uint32_t MaxQuadCount = 10000;
     static const uint32_t MaxVertexCount = MaxQuadCount * 4;
     static const uint32_t MaxIndexCount = MaxQuadCount * 6;
-    static const uint32_t MaxTextureSlots = 32;
-
+    static const uint32_t MaxTextureSlots = 32;	
+   
     struct QuadVertex
     {
         glm::vec3 Position;
@@ -31,6 +32,10 @@ namespace GLCore::Utils
         uint32_t TextureSlotIndex = 1;  // 0 is white texture
 
         Renderer::Statistics Stats;
+
+        PerlinNoise noise;
+        uint32_t NoiseMapWidth = 512;
+        uint32_t NoiseMapHeight = 512;
     };
 
     static RendererData s_Data;
@@ -87,6 +92,12 @@ namespace GLCore::Utils
         s_Data.TextureShader->SetIntArray("u_Textures", samplers, MaxTextureSlots);
 
         s_Data.TextureSlots[0] = s_Data.WhiteTexture;
+
+        
+        // Initialize noise and noisemap
+        int seed = 1996;
+        s_Data.noise = PerlinNoise(seed);
+
     }
 
     void Renderer::Shutdown()
@@ -120,12 +131,12 @@ namespace GLCore::Utils
 
     void Renderer::DrawQuad(const glm::vec2& position, const glm::vec2& size, const glm::vec4& color)
     {
-        DrawQuad({ position.x, position.y, 0.0f }, size, color);
+        DrawQuad({ position.x, 0.0f,position.y }, size, color);
     }
 
     void Renderer::DrawQuad(const glm::vec2& position, const glm::vec2& size, const Ref<Texture2D>& texture)
     {
-        DrawQuad({ position.x, position.y, 0.0f }, size, texture);
+        DrawQuad({ position.x, 0.0f,  position.y }, size, texture);
     }
 
     void Renderer::DrawQuad(const glm::vec3& position, const glm::vec2& size, const glm::vec4& color)
@@ -139,12 +150,28 @@ namespace GLCore::Utils
 
         constexpr size_t quadVertexCount = 4;
         constexpr glm::vec2 textureCoords[] = { { 0.0f, 0.0f }, { 1.0f, 0.0f}, {1.0f, 1.0f}, {0.0f, 1.0f} };
+
+        glm::vec3 deri1{ 0.0f };
+        glm::vec3 deri2{ 0.0f };
+        glm::vec3 deri3{ 0.0f };
+        glm::vec3 deri4{ 0.0f };
+
         const glm::vec3 vertexPositions[] = {
-            {position.x,            position.y,             position.z},
-            {position.x + size.x,   position.y,             position.z},
-            {position.x + size.x,   position.y ,    position.z + size.y},
-            {position.x,            position.y ,    position.z + size.y}
+            {position.x,            position.y + s_Data.noise.eval(glm::vec3(position.x, 0.0f, position.y)                      , deri1),                        position.z},
+            {position.x + size.x,   position.y + s_Data.noise.eval(glm::vec3(position.x + size.x, 0.0f, position.y)             , deri2),                position.z},
+            {position.x + size.x,   position.y + s_Data.noise.eval(glm::vec3(position.x + size.x, 0.0f, position.y + size.y)    , deri3),      position.z + size.y},
+            {position.x,            position.y + s_Data.noise.eval(glm::vec3(position.x, 0.0f, position.y + size.y)             , deri4),               position.z + size.y}
         };
+
+        // TODO: Check normals
+        const glm::vec3 vertexNormals[] = {
+            glm::normalize(glm::vec3(-deri1.x, 1.0f, -deri1.z)),
+            glm::normalize(glm::vec3(-deri2.x, 1.0f, -deri2.z)),
+            glm::normalize(glm::vec3(-deri3.x, 1.0f, -deri3.z)),
+            glm::normalize(glm::vec3(-deri4.x, 1.0f, -deri4.z))
+        };
+
+
         const float textureIndex = 0.0f;
 
         for (size_t i = 0; i < quadVertexCount; i++)
