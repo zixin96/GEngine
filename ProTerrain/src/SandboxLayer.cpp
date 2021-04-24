@@ -50,9 +50,9 @@ void SandboxLayer::OnUpdate(Timestep ts)
     Renderer::ResetStats();
     Renderer::BeginBatch();
 
-    for (float y = -1.0f; y < 1.0f; y += 0.25f)
+    for (float y = -10.0f; y < 10.0f; y += 0.25f)
     {
-        for (float x = -1.0f; x < 1.0f; x += 0.25f)
+        for (float x = -10.0f; x < 10.0f; x += 0.25f)
         {
             glm::vec4 color = { (x + 10) / 20.0f, 0.2f, (y + 10) / 20.0f, 1.0f };
             Renderer::DrawQuad({ x, 0.0f, y }, { 0.25f, 0.25f }, color);

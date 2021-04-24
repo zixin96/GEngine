@@ -157,10 +157,10 @@ namespace GLCore::Utils
         glm::vec3 deri4{ 0.0f };
 
         const glm::vec3 vertexPositions[] = {
-            {position.x,            position.y + s_Data.noise.eval(glm::vec3(position.x, 0.0f, position.y)                      , deri1),                        position.z},
-            {position.x + size.x,   position.y + s_Data.noise.eval(glm::vec3(position.x + size.x, 0.0f, position.y)             , deri2),                position.z},
-            {position.x + size.x,   position.y + s_Data.noise.eval(glm::vec3(position.x + size.x, 0.0f, position.y + size.y)    , deri3),      position.z + size.y},
-            {position.x,            position.y + s_Data.noise.eval(glm::vec3(position.x, 0.0f, position.y + size.y)             , deri4),               position.z + size.y}
+            {position.x,            position.y + s_Data.noise.eval(glm::vec3(position.x,            0.0f, position.z)                      , deri1),                position.z},
+            {position.x + size.x,   position.y + s_Data.noise.eval(glm::vec3(position.x + size.x,   0.0f, position.z)                      , deri2),                position.z},
+            {position.x + size.x,   position.y + s_Data.noise.eval(glm::vec3(position.x + size.x,   0.0f, position.z + size.y)             , deri3),                position.z + size.y},
+            {position.x,            position.y + s_Data.noise.eval(glm::vec3(position.x,            0.0f, position.z + size.y)             , deri4),                position.z + size.y}
         };
 
         // TODO: Check normals
