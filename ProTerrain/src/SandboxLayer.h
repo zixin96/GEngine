@@ -1,7 +1,6 @@
 #pragma once
 
 #include <GLCore.h>
-#include <GLCoreUtils.h>
 
 class SandboxLayer : public GLCore::Layer
 {
@@ -15,5 +14,5 @@ public:
 	virtual void OnUpdate(GLCore::Timestep ts) override;
 	virtual void OnImGuiRender() override;
 private:
-	GLCore::Utils::PerspectiveCamera m_PerspectiveCamera;
+	GLCore::PerspectiveCamera m_PerspectiveCamera;
 };

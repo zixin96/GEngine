@@ -1,8 +1,7 @@
 #include "SandboxLayer.h"
-#include "GLCORE/Util/MeshRenderer.h"
+#include "GLCore/Renderer/MeshRenderer.h"
 
 using namespace GLCore;
-using namespace GLCore::Utils;
 
 SandboxLayer::SandboxLayer()
     : m_PerspectiveCamera(30.0f, 1.778f, 0.1f, 1000.f)

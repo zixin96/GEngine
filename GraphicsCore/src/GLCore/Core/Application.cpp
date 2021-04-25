@@ -4,8 +4,8 @@
 #include "Log.h"
 
 #include "Input.h"
-#include "GLCore/Util/Renderer.h"
-#include "GLCore/Util/MeshRenderer.h"
+#include "GLCore/Renderer/Renderer.h"
+#include "GLCore/Renderer/MeshRenderer.h"
 
 #include <glfw/glfw3.h>
 
@@ -36,7 +36,7 @@ namespace GLCore {
     Application::~Application()
     {
         // Utils::Renderer::Shutdown();
-        Utils::MeshRenderer::Shutdown();
+        MeshRenderer::Shutdown();
     }
 
 	void Application::PushLayer(Layer* layer)
