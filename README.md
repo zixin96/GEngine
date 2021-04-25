@@ -18,6 +18,12 @@ Open `SDF.sln` for SDF.
 
 Open `L-System`for L-System.
 
+## Camera Control
+
+Rotate: Alt + Left Mouse Button
+Pan: Alt + Middle Mouse Button
+Zoom: Mouse Scroll or Alt + Right Mouse Button 
+
 ## Notes
 
 - A **much** more elegant way to set buffer objects: NO MORE manually setting offsets and strides! 
