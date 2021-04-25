@@ -62,6 +62,9 @@ namespace GLCore {
         LOG_INFO("  Vendor: {0}", glGetString(GL_VENDOR));
         LOG_INFO("  Renderer: {0}", glGetString(GL_RENDERER));
         LOG_INFO("  Version: {0}", glGetString(GL_VERSION));
+        int numAtts;
+        glGetIntegerv(GL_MAX_VERTEX_ATTRIBS, &numAtts);
+        LOG_INFO("  Maximum number of vertex attributes supported: {0}", numAtts);
 
         glfwSetWindowUserPointer(m_Window, &m_Data);
         SetVSync(true);

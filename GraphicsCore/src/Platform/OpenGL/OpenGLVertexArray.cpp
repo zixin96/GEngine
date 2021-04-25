@@ -142,7 +142,7 @@ namespace GLCore
     {
         glBindVertexArray(m_RendererID);
         IndexBuffer->Bind();
-        m_IndexBuffer = IndexBuffer;
+        m_IndexBuffer = IndexBuffer; // TODO: This line seems unnecessary
     }
 
 }

@@ -1,10 +1,12 @@
-#version 450 core
+#version 460 core
 
 layout (location = 0) out vec4 o_Color;
 
 in vec3 fs_Normal;
 in vec2 fs_TexCoord;
 in vec3 fs_Pos;
+
+uniform float u_Changing;
 
 void main()
 {
@@ -37,6 +39,6 @@ void main()
         o_Color = vec4(0.40, 0.29, 0.10, 1.0);
 	}
 	else {
-		o_Color = vec4(1.0, 1.0, 1.0, 1.0);
+		o_Color = mix(vec4(1.0, 1.0, 1.0, 1.0), vec4(0.40, 0.29, 0.10, 1.0), u_Changing);
 	}
 }

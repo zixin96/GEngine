@@ -5,6 +5,7 @@
 #include "GLCore/Renderer/Shader.h"
 #include "GLCore/Renderer/PolyMesh.h"
 #include <glad/glad.h>
+#include <glfw/glfw3.h>
 
 namespace GLCore
 {
@@ -132,6 +133,11 @@ namespace GLCore
         s_Data.TextureShader->Bind();
         s_Data.TextureShader->SetMat4("u_ViewProjection",
             viewProj);
+
+        float timeValue = static_cast<float>(glfwGetTime());
+        float changing = (sin(timeValue) / 2.0f) + 0.5f;
+        s_Data.TextureShader->SetFloat("u_Changing",
+            changing);
     }
 
     void MeshRenderer::Draw()
