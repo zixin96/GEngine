@@ -1,7 +1,9 @@
 #include "glpch.h"
 #include "Renderer.h"
-#include <GLCoreUtils.h>
 #include "GLCore/Util/PerlinNoise.h"
+#include "GLCore/Renderer/VertexArray.h"
+#include "GLCore/Renderer/Shader.h"
+#include <glad/glad.h>
 
 namespace GLCore
 {

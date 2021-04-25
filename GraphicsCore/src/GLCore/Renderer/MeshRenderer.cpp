@@ -1,7 +1,10 @@
 #include "glpch.h"
 #include "MeshRenderer.h"
-#include <GLCoreUtils.h>
 #include "GLCore/Util/PerlinNoise.h"
+#include "GLCore/Renderer/VertexArray.h"
+#include "GLCore/Renderer/Shader.h"
+#include "GLCore/Renderer/PolyMesh.h"
+#include <glad/glad.h>
 
 namespace GLCore
 {

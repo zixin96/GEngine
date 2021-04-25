@@ -1,6 +1,5 @@
 #include "glpch.h"
 #include "PerlinNoise.h"
-#include "GLCoreUtils.h"
 #include <random>
 #include <functional>
 #include <glm/gtc/constants.hpp>
