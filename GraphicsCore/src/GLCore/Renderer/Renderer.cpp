@@ -96,35 +96,6 @@ namespace GLCore
         s_Data.TextureShader->SetIntArray("u_Textures", samplers, MaxTextureSlots);
 
         s_Data.TextureSlots[0] = s_Data.WhiteTexture;
-
-        
-        // Initialize noise and noisemap
-        int seed = 1996;
-        s_Data.Noise = PerlinNoise(seed);
-        s_Data.NoiseMap = new float[s_Data.NoiseMapWidth * s_Data.NoiseMapHeight]{ 0 };
-
-        float maxVal = 0;
-        for (uint32_t j = 0; j < s_Data.NoiseMapHeight; ++j) {
-            for (uint32_t i = 0; i < s_Data.NoiseMapWidth; ++i) {
-                float fractal = 0;
-                float amplitude = 1;
-                glm::vec3 pt = glm::vec3(i, 0, j) * (1 / 128.f);
-                for (uint32_t k = 0; k < s_Data.NumLayers; ++k) {
-                    // TODO: need a eval taking only a point?
-                    // fractal += (1.0f + s_Data.Noise.eval(pt)) * 0.5f * amplitude;
-                    pt *= 2.0f;
-                    amplitude *= 0.5;
-                }
-                if (fractal > maxVal) maxVal = fractal;
-                s_Data.NoiseMap[j * s_Data.NoiseMapWidth + i] = fractal;
-            }
-        }
-
-        for (uint32_t i = 0; i < s_Data.NoiseMapWidth * s_Data.NoiseMapHeight; ++i)
-            s_Data.NoiseMap[i] /= maxVal;
-
-
-
     }
 
     void Renderer::Shutdown()
@@ -159,12 +130,12 @@ namespace GLCore
 
     void Renderer::DrawQuad(const glm::vec2& position, const glm::vec2& size, const glm::vec4& color)
     {
-        DrawQuad({ position.x, 0.0f,position.y }, size, color);
+        DrawQuad({ position.x, position.y, 0.0f  }, size, color);
     }
 
     void Renderer::DrawQuad(const glm::vec2& position, const glm::vec2& size, const Ref<Texture2D>& texture)
     {
-        DrawQuad({ position.x, 0.0f,  position.y }, size, texture);
+        DrawQuad({ position.x, position.y, 0.0f }, size, texture);
     }
 
     void Renderer::DrawQuad(const glm::vec3& position, const glm::vec2& size, const glm::vec4& color)
@@ -179,39 +150,12 @@ namespace GLCore
         constexpr size_t quadVertexCount = 4;
         constexpr glm::vec2 textureCoords[] = { { 0.0f, 0.0f }, { 1.0f, 0.0f}, {1.0f, 1.0f}, {0.0f, 1.0f} };
 
-
-        
-
-        // displace: postprocessing step
-//         for (uint32_t i = 0; i < poly->numVertices; ++i) {
-//             glm::vec2 st = poly->st[i];
-//             uint32_t x = std::min(static_cast<uint32_t>(st.x * s_Data.NoiseMapWidth), s_Data.NoiseMapWidth - 1);
-//             uint32_t y = std::min(static_cast<uint32_t>(st.y * s_Data.NoiseMapHeight), s_Data.NoiseMapHeight - 1);
-//             poly->vertices[i].y = 2 * s_Data.NoiseMap[y * s_Data.NoiseMapWidth + x] - 1;
-//         }
-
-
-
-        glm::vec3 deri1{ 0.0f };
-        glm::vec3 deri2{ 0.0f };
-        glm::vec3 deri3{ 0.0f };
-        glm::vec3 deri4{ 0.0f };
-
         const glm::vec3 vertexPositions[] = {
-            {position.x,            position.y + s_Data.Noise.eval(glm::vec3(position.x,            0.0f, position.z)                      , deri1),                position.z},
-            {position.x + size.x,   position.y + s_Data.Noise.eval(glm::vec3(position.x + size.x,   0.0f, position.z)                      , deri2),                position.z},
-            {position.x + size.x,   position.y + s_Data.Noise.eval(glm::vec3(position.x + size.x,   0.0f, position.z + size.y)             , deri3),                position.z + size.y},
-            {position.x,            position.y + s_Data.Noise.eval(glm::vec3(position.x,            0.0f, position.z + size.y)             , deri4),                position.z + size.y}
+            {position.x,            position.y,                position.z},
+            {position.x + size.x,   position.y,                position.z},
+            {position.x + size.x,   position.y + size.y,                position.z},
+            {position.x,            position.y + size.y,                position.z}
         };
-
-        // TODO: Check normals
-        const glm::vec3 vertexNormals[] = {
-            glm::normalize(glm::vec3(-deri1.x, 1.0f, -deri1.z)),
-            glm::normalize(glm::vec3(-deri2.x, 1.0f, -deri2.z)),
-            glm::normalize(glm::vec3(-deri3.x, 1.0f, -deri3.z)),
-            glm::normalize(glm::vec3(-deri4.x, 1.0f, -deri4.z))
-        };
-
 
         const float textureIndex = 0.0f;
 
@@ -305,66 +249,4 @@ namespace GLCore
         s_Data.TextureShader->SetMat4("u_ViewProjection",
             viewProj);
     }
-
-//     void Renderer::DrawQuad(uint32_t width /*= 1*/, uint32_t height /*= 1*/, uint32_t subdivisionWidth /*= 40*/, uint32_t subdivisionHeight /*= 40*/)
-//     {
-//         if (s_Data.QuadIndexCount >= MaxIndexCount)
-//         {
-//             EndBatch();
-//             Flush();
-//             BeginBatch();
-//         }
-// 
-//         constexpr size_t quadVertexCount = 4;
-//         constexpr glm::vec2 textureCoords[] = { { 0.0f, 0.0f }, { 1.0f, 0.0f}, {1.0f, 1.0f}, {0.0f, 1.0f} };
-// 
-// 
-// 
-// 
-//         // displace: postprocessing step
-//         for (uint32_t i = 0; i < poly->numVertices; ++i) {
-//             glm::vec2 st = poly->st[i];
-//             uint32_t x = std::min(static_cast<uint32_t>(st.x * s_Data.NoiseMapWidth), s_Data.NoiseMapWidth - 1);
-//             uint32_t y = std::min(static_cast<uint32_t>(st.y * s_Data.NoiseMapHeight), s_Data.NoiseMapHeight - 1);
-//             poly->vertices[i].y = 2 * s_Data.NoiseMap[y * s_Data.NoiseMapWidth + x] - 1;
-//         }
-// 
-// 
-// 
-//         glm::vec3 deri1{ 0.0f };
-//         glm::vec3 deri2{ 0.0f };
-//         glm::vec3 deri3{ 0.0f };
-//         glm::vec3 deri4{ 0.0f };
-// 
-//         const glm::vec3 vertexPositions[] = {
-//             {position.x,            position.y + s_Data.Noise.eval(glm::vec3(position.x,            0.0f, position.z)                      , deri1),                position.z},
-//             {position.x + size.x,   position.y + s_Data.Noise.eval(glm::vec3(position.x + size.x,   0.0f, position.z)                      , deri2),                position.z},
-//             {position.x + size.x,   position.y + s_Data.Noise.eval(glm::vec3(position.x + size.x,   0.0f, position.z + size.y)             , deri3),                position.z + size.y},
-//             {position.x,            position.y + s_Data.Noise.eval(glm::vec3(position.x,            0.0f, position.z + size.y)             , deri4),                position.z + size.y}
-//         };
-// 
-//         // TODO: Check normals
-//         const glm::vec3 vertexNormals[] = {
-//             glm::normalize(glm::vec3(-deri1.x, 1.0f, -deri1.z)),
-//             glm::normalize(glm::vec3(-deri2.x, 1.0f, -deri2.z)),
-//             glm::normalize(glm::vec3(-deri3.x, 1.0f, -deri3.z)),
-//             glm::normalize(glm::vec3(-deri4.x, 1.0f, -deri4.z))
-//         };
-// 
-// 
-//         const float textureIndex = 0.0f;
-// 
-//         for (size_t i = 0; i < quadVertexCount; i++)
-//         {
-//             s_Data.QuadVertexBufferPtr->Position = vertexPositions[i];
-//             s_Data.QuadVertexBufferPtr->Color = color;
-//             s_Data.QuadVertexBufferPtr->TexCoords = textureCoords[i];
-//             s_Data.QuadVertexBufferPtr->TexIndex = textureIndex;
-//             s_Data.QuadVertexBufferPtr++;
-//         }
-// 
-//         s_Data.QuadIndexCount += 6;
-//         s_Data.Stats.QuadCount++;
-//     }
-
 }

@@ -9,6 +9,12 @@
 
 namespace GLCore
 {
+    struct MeshVertex
+    {
+        glm::vec3 Position;
+        glm::vec3 Normal;
+        glm::vec2 TexCoord;
+    };
 
     struct RendererData
     {
@@ -36,15 +42,10 @@ namespace GLCore
             Shader::ReadFileAsString("assets/shaders/terrain.frag.glsl"));
 
         s_Data.Mesh = new PolyMesh(5, 5, 100, 100);
-
         // Initialize noise and noise map
         int seed = 1996;
         s_Data.Noise = PerlinNoise(seed);
         s_Data.NoiseMap = new float[s_Data.NoiseMapWidth * s_Data.NoiseMapHeight]{ 0 };
-
-
-
-
 
         float maxVal = 0;
         for (uint32_t j = 0; j < s_Data.NoiseMapHeight; ++j) {
@@ -54,8 +55,8 @@ namespace GLCore
                 glm::vec3 pt = glm::vec3(i, 0, j) * (1 / 128.f);
                 for (uint32_t k = 0; k < s_Data.NumLayers; ++k) {
                     fractal += (1.0f + s_Data.Noise.eval(pt)) * 0.5f * amplitude;
-                    pt *= 5.0f;
-                    amplitude *= 0.5;
+                    pt *= s_Data.Stats.Lacunarity;
+                    amplitude *= s_Data.Stats.Persistance;
                 }
                 if (fractal > maxVal) maxVal = fractal;
                 s_Data.NoiseMap[j * s_Data.NoiseMapWidth + i] = fractal;
@@ -89,7 +90,6 @@ namespace GLCore
             s_Data.Mesh->m_Normals[s_Data.Mesh->verticesArray[off]] = glm::normalize(glm::cross(bitangent,tangent));
             off += nverts;
         }
-
 
         s_Data.MeshVertexArray = VertexArray::Create();
         

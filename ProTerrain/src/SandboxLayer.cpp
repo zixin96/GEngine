@@ -26,6 +26,7 @@ void SandboxLayer::OnAttach()
 void SandboxLayer::OnDetach()
 {
 	// Shutdown here
+    MeshRenderer::Shutdown();
 }
 
 void SandboxLayer::OnEvent(Event& event)
@@ -49,7 +50,6 @@ void SandboxLayer::OnUpdate(Timestep ts)
 void SandboxLayer::OnImGuiRender()
 {
      ImGui::Begin("Controls");
-     ImGui::DragFloat("Lacunarity", &MeshRenderer::GetTerrainStats().Lacunarity);
 //     ImGui::Text("Quads: %d", Renderer::GetStats().QuadCount);
 //     ImGui::Text("Draws: %d", Renderer::GetStats().DrawCount);
      ImGui::End();

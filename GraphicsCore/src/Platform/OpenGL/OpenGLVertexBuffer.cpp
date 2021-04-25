@@ -4,18 +4,30 @@
 
 namespace GLCore
 {
-    OpenGLVertexBuffer::OpenGLVertexBuffer(uint32_t size, float* vertices)
+    static GLenum OpenGLUsage(VertexBufferUsage usage)
     {
-        glGenBuffers(1, &m_RendererID);
-        glBindBuffer(GL_ARRAY_BUFFER, m_RendererID);
-        glBufferData(GL_ARRAY_BUFFER, size, vertices, GL_STATIC_DRAW);
+        switch (usage)
+        {
+        case VertexBufferUsage::Static:    return GL_STATIC_DRAW;
+        case VertexBufferUsage::Dynamic:   return GL_DYNAMIC_DRAW;
+        }
+        GLCORE_ASSERT(false, "Unknown vertex buffer usage");
+        return 0;
     }
 
-    OpenGLVertexBuffer::OpenGLVertexBuffer(uint32_t size)
+    OpenGLVertexBuffer::OpenGLVertexBuffer(uint32_t size, void* data, VertexBufferUsage usage /*= VertexBufferUsage::Static*/)
+        : m_Usage(usage)
     {
         glGenBuffers(1, &m_RendererID);
         glBindBuffer(GL_ARRAY_BUFFER, m_RendererID);
-        glBufferData(GL_ARRAY_BUFFER, size, nullptr, GL_DYNAMIC_DRAW);
+        glBufferData(GL_ARRAY_BUFFER, size, data, OpenGLUsage(usage));
+    }
+
+    OpenGLVertexBuffer::OpenGLVertexBuffer(uint32_t size, VertexBufferUsage usage /*= VertexBufferUsage::Dynamic*/)
+    {
+        glGenBuffers(1, &m_RendererID);
+        glBindBuffer(GL_ARRAY_BUFFER, m_RendererID);
+        glBufferData(GL_ARRAY_BUFFER, size, nullptr, OpenGLUsage(usage));
     }
 
     OpenGLVertexBuffer::~OpenGLVertexBuffer()

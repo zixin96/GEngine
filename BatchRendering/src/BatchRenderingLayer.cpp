@@ -1,9 +1,7 @@
 #include "BatchRenderingLayer.h"
-#include "GLCORE/Util/Renderer.h"
+#include "GLCore/Renderer/Renderer.h"
 
 using namespace GLCore;
-using namespace GLCore::Utils;
-
 
 BatchRenderingLayer::BatchRenderingLayer()
 {
@@ -32,6 +30,7 @@ void BatchRenderingLayer::OnAttach()
 
 void BatchRenderingLayer::OnDetach()
 {
+    Renderer::Shutdown();
 }
 
 void BatchRenderingLayer::OnEvent(Event& event)

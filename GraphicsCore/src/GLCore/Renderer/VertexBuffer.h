@@ -107,6 +107,11 @@ namespace GLCore
         uint32_t m_Stride = 0;
     };
 
+    enum class VertexBufferUsage
+    {
+        None = 0, Static = 1, Dynamic = 2
+    };
+
     class VertexBuffer
     {
     public:

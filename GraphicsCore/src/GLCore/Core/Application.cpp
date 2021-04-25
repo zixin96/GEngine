@@ -35,8 +35,6 @@ namespace GLCore {
 
     Application::~Application()
     {
-        // Utils::Renderer::Shutdown();
-        MeshRenderer::Shutdown();
     }
 
 	void Application::PushLayer(Layer* layer)
