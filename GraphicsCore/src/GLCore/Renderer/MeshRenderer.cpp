@@ -132,6 +132,7 @@ namespace GLCore
             s_Data.NoiseMap[i] /= maxVal;
         }
 
+
         // displace y coordinate of every vertex
         for (uint32_t i = 0; i < s_Data.Mesh->numVertices; ++i) {
             glm::vec2 st = s_Data.Mesh->m_TextureCoords[i];

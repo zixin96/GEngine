@@ -21,6 +21,7 @@ namespace GLCore
         virtual void SetInt(const std::string& name, int value) = 0;
         virtual void SetFloat(const std::string& name, float value) = 0;
         virtual void SetIntArray(const std::string& name, int* value, uint32_t count) = 0;
+        virtual void SetFloatArray(const std::string& name, float* value, uint32_t count) = 0;
 
         static Ref<Shader> Create(const std::string& filePath);
         static Ref<Shader> Create(const std::string& name, std::string& vertexSource, const std::string& fragmentSource);

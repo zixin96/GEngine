@@ -185,6 +185,11 @@ namespace GLCore
         UploadIntArray(name, value, count);
     }
 
+    void OpenGLShader::SetFloatArray(const std::string& name, float* value, uint32_t count)
+    {
+        UploadFloatArray(name, value, count);
+    }
+
     void OpenGLShader::SetFloat(const std::string& name, float value)
     {
         UploadFloat(name, value);
@@ -213,6 +218,11 @@ namespace GLCore
     void OpenGLShader::UploadIntArray(const std::string& name, int* value, uint32_t count) const
     {
         glUniform1iv(glGetUniformLocation(m_RendererID, name.c_str()), count, value);
+    }
+
+    void OpenGLShader::UploadFloatArray(const std::string& name, float* value, uint32_t count) const
+    {
+        glUniform1fv(glGetUniformLocation(m_RendererID, name.c_str()), count, value);
     }
 
     void OpenGLShader::UploadFloat(const std::string& name, float value) const
