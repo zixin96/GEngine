@@ -21,10 +21,6 @@ void SandboxLayer::OnAttach()
     // glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
     MeshRenderer::Init();
-    
-
-	// Init here
-	glClearColor(0.8f, 0.2f, 0.3f, 1.0f);
 }
 
 void SandboxLayer::OnDetach()
@@ -42,7 +38,7 @@ void SandboxLayer::OnUpdate(Timestep ts)
 {
     m_PerspectiveCamera.OnUpdate(ts);
 
-    glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
+    glClearColor(0.12f, 0.82f, 0.98f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     MeshRenderer::BeginScene(m_PerspectiveCamera);
