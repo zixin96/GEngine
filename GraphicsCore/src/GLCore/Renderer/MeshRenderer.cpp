@@ -23,18 +23,28 @@ namespace GLCore
         uint32_t NoiseMapWidth = 512;
         uint32_t NoiseMapHeight = 512;
         uint32_t NumLayers = 5;
+
+        MeshRenderer::TerrainStats Stats;
     };
 
     static RendererData s_Data;
 
     void MeshRenderer::Init()
     {
+        s_Data.TextureShader = Shader::Create("terrain",
+            Shader::ReadFileAsString("assets/shaders/terrain.vert.glsl"),
+            Shader::ReadFileAsString("assets/shaders/terrain.frag.glsl"));
+
         s_Data.Mesh = new PolyMesh(5, 5, 100, 100);
 
         // Initialize noise and noise map
         int seed = 1996;
         s_Data.Noise = PerlinNoise(seed);
         s_Data.NoiseMap = new float[s_Data.NoiseMapWidth * s_Data.NoiseMapHeight]{ 0 };
+
+
+
+
 
         float maxVal = 0;
         for (uint32_t j = 0; j < s_Data.NoiseMapHeight; ++j) {
@@ -44,7 +54,7 @@ namespace GLCore
                 glm::vec3 pt = glm::vec3(i, 0, j) * (1 / 128.f);
                 for (uint32_t k = 0; k < s_Data.NumLayers; ++k) {
                     fractal += (1.0f + s_Data.Noise.eval(pt)) * 0.5f * amplitude;
-                    pt *= 2.0f;
+                    pt *= 5.0f;
                     amplitude *= 0.5;
                 }
                 if (fractal > maxVal) maxVal = fractal;
@@ -111,14 +121,6 @@ namespace GLCore
         
         s_Data.MeshIndexBuffer = IndexBuffer::Create(s_Data.Mesh->m_NumFaces * 6, s_Data.Mesh->m_Indices);
         s_Data.MeshVertexArray->SetIndexBuffer(s_Data.MeshIndexBuffer);
-
-        s_Data.TextureShader = Shader::Create("terrain",
-            Shader::ReadFileAsString("assets/shaders/terrain.vert.glsl"),
-            Shader::ReadFileAsString("assets/shaders/terrain.frag.glsl"));
-
-
-     
-
     }
 
     void MeshRenderer::Shutdown()
@@ -144,6 +146,11 @@ namespace GLCore
     {
         s_Data.MeshVertexArray->Bind();
         glDrawElements(GL_TRIANGLES, s_Data.MeshIndexBuffer->GetCount(), GL_UNSIGNED_INT, nullptr);
+    }
+
+    MeshRenderer::TerrainStats& MeshRenderer::GetTerrainStats()
+    {
+        return s_Data.Stats;
     }
 
 }

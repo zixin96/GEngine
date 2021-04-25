@@ -7,7 +7,7 @@ layout (location = 2) in vec2 a_TexCoord;
 uniform mat4 u_ViewProjection;
 
 out vec3 fs_Normal;
-out vec3 fs_Pos;
+out float fs_Height;
 out vec2 fs_TexCoord;
 
 void main()
@@ -15,5 +15,5 @@ void main()
 	gl_Position = u_ViewProjection * vec4(a_Position, 1.0f);
 	fs_Normal = a_Normal;
 	fs_TexCoord = a_TexCoord;
-	fs_Pos = a_Position;
+	fs_Height = a_Position.y;
 }
