@@ -4,13 +4,15 @@ This is a work-in-progress OpenGL platform I use to build graphics applications.
 
 ## Usage
 
-Currently only supports Windows. 
+OpenGL Version: **4.6**
 
-```
-git clone --recursive 
-```
+C++ Version: **C++17**
 
-Run `scripts/Win-Premake.bat` and open `ProTerrain.sln` in Visual Studio 2019 for Procedural Terrain.
+Currently only supports Windows, Visual Studio 2019. 
+
+1. Clone the repository: `git clone --recursive XXX`
+2. Run `Scripts/Win-Premake.bat` - this will create `ProTerrain.sln` for procedural terrain and make sure everything is setup correctly
+3. Open `ProTerrain.sln` and build `Debug` `x64` - ProTerrain should be the startup project so really you can just hit `F5` to build and debug the startup project
 
 Open `SDF.sln` for SDF.
 
