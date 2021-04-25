@@ -12,6 +12,7 @@ namespace GLCore
         static void BeginScene(const PerspectiveCamera& camera);
 
         static void Draw();
+        static void RecomputeTerrainData();
 
         struct TerrainStats
         {

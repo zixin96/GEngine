@@ -50,7 +50,10 @@ void SandboxLayer::OnUpdate(Timestep ts)
 void SandboxLayer::OnImGuiRender()
 {
      ImGui::Begin("Controls");
-//     ImGui::Text("Quads: %d", Renderer::GetStats().QuadCount);
-//     ImGui::Text("Draws: %d", Renderer::GetStats().DrawCount);
+     if (ImGui::DragFloat("Lacunarity", &MeshRenderer::GetTerrainStats().Lacunarity, 0.1f, 1.0f, 10.0f, "%.1f")
+         || ImGui::DragFloat("Persistance", &MeshRenderer::GetTerrainStats().Persistance, 0.1f, 0.1f, 1.0f, "%.1f"))
+     {
+         MeshRenderer::RecomputeTerrainData();
+     }
      ImGui::End();
 }
