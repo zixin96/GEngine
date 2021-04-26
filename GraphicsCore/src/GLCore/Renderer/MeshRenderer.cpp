@@ -6,9 +6,13 @@
 #include "GLCore/Renderer/PolyMesh.h"
 #include <glad/glad.h>
 #include <glfw/glfw3.h>
+#include <glm/gtc/matrix_transform.hpp>
 
 namespace GLCore
 {
+    const glm::vec4 lightColor{ 1.0f, 1.0f, 1.0f, 1.0f };
+    const glm::vec3 lightPos{ 5.0f, 20.0f, 5.0f };
+
     struct MeshVertex
     {
         glm::vec3 Position;
@@ -21,7 +25,7 @@ namespace GLCore
         Ref<VertexArray> MeshVertexArray;
         Ref<VertexBuffer> MeshVertexBuffer;
         Ref<IndexBuffer> MeshIndexBuffer;
-        Ref<Shader> TextureShader;
+        Ref<Shader> TerrainShader;
 
         PolyMesh* Mesh;
         PerlinNoise Noise;
@@ -31,21 +35,27 @@ namespace GLCore
         uint32_t NumLayers = 5;
 
         MeshRenderer::TerrainStats Stats;
+
+
+        Ref<VertexArray> LightSourceVertexArray;
+        Ref<VertexBuffer> LightSourceVertexBuffer;
+        Ref<IndexBuffer> LightSourceIndexBuffer;
+        Ref<Shader> LightSourceShader;
     };
 
     static RendererData s_Data;
 
     void MeshRenderer::Init()
     {
-        s_Data.TextureShader = Shader::Create("terrain",
-            Shader::ReadFileAsString("assets/shaders/terrain.vert.glsl"),
-            Shader::ReadFileAsString("assets/shaders/terrain.frag.glsl"));
-
+        // Initialize mesh and noise map
         s_Data.Mesh = new PolyMesh(5, 5, 100, 100);
-        // Initialize noise and noise map
         int seed = 1996;
         s_Data.Noise = PerlinNoise(seed);
         s_Data.NoiseMap = new float[s_Data.NoiseMapWidth * s_Data.NoiseMapHeight]{ 0 };
+
+        s_Data.TerrainShader = Shader::Create("terrain",
+            Shader::ReadFileAsString("assets/shaders/terrain.vert.glsl"),
+            Shader::ReadFileAsString("assets/shaders/terrain.frag.glsl"));
 
         RecomputeTerrainData();
 
@@ -61,6 +71,54 @@ namespace GLCore
         
         s_Data.MeshIndexBuffer = IndexBuffer::Create(s_Data.Mesh->m_NumFaces * 6, s_Data.Mesh->m_Indices);
         s_Data.MeshVertexArray->SetIndexBuffer(s_Data.MeshIndexBuffer);
+
+
+        s_Data.LightSourceShader = Shader::Create("lightSource",
+            Shader::ReadFileAsString("assets/shaders/lightSource.vert.glsl"),
+            Shader::ReadFileAsString("assets/shaders/lightSource.frag.glsl"));
+
+        s_Data.LightSourceVertexArray = VertexArray::Create();
+        float cubeVertices[] = {
+            // front
+            -1.0, -1.0,  1.0,
+             1.0, -1.0,  1.0,
+             1.0,  1.0,  1.0,
+            -1.0,  1.0,  1.0,
+            // back
+            -1.0, -1.0, -1.0,
+             1.0, -1.0, -1.0,
+             1.0,  1.0, -1.0,
+            -1.0,  1.0, -1.0
+        };
+        s_Data.LightSourceVertexBuffer = VertexBuffer::Create(sizeof(cubeVertices), cubeVertices);
+        s_Data.LightSourceVertexBuffer->SetLayout({
+            { ShaderDataType::Float3,	"a_Position" },
+        });
+        s_Data.LightSourceVertexArray->AddVertexBuffer(s_Data.LightSourceVertexBuffer);
+
+        uint32_t cubeIndices[] =
+        {
+            // front
+            0, 1, 2,
+            2, 3, 0,
+            // right
+            1, 5, 6,
+            6, 2, 1,
+            // back
+            7, 6, 5,
+            5, 4, 7,
+            // left
+            4, 0, 3,
+            3, 7, 4,
+            // bottom
+            4, 5, 1,
+            1, 0, 4,
+            // top
+            3, 2, 6,
+            6, 7, 3
+        };
+        s_Data.LightSourceIndexBuffer = IndexBuffer::Create(36, cubeIndices);
+        s_Data.LightSourceVertexArray->SetIndexBuffer(s_Data.LightSourceIndexBuffer);
     }
 
     void MeshRenderer::Shutdown()
@@ -71,23 +129,37 @@ namespace GLCore
 
     void MeshRenderer::BeginScene(const PerspectiveCamera& camera)
     {
+        s_Data.TerrainShader->Bind();
         glm::mat4 viewProj = camera.GetViewProjection();
-        s_Data.TextureShader->Bind();
-        s_Data.TextureShader->SetMat4("u_ViewProjection",
+        s_Data.TerrainShader->SetMat4("u_ViewProjection",
             viewProj);
-
+        s_Data.TerrainShader->SetMat4("u_Model",
+            glm::scale(glm::mat4(1.0f), glm::vec3(10.0f)));
         float timeValue = static_cast<float>(glfwGetTime());
         float changing = (sin(timeValue) / 2.0f) + 0.5f;
-        s_Data.TextureShader->SetFloat("u_Changing",
+        s_Data.TerrainShader->SetFloat("u_Changing",
             changing);
+        s_Data.TerrainShader->SetVec4("u_LightColor",
+            lightColor);
+        s_Data.TerrainShader->SetVec3("u_LightPos",
+            lightPos);
+
+
+        s_Data.LightSourceShader->Bind();
+        s_Data.LightSourceShader->SetMat4("u_ViewProjection",
+            viewProj);
+        s_Data.LightSourceShader->SetMat4("u_Model",
+            glm::translate(glm::mat4(1.0f), lightPos) * glm::scale(glm::mat4(1.0f), glm::vec3(1.0f)));
+        s_Data.LightSourceShader->SetVec4("u_LightColor",
+            lightColor);
     }
 
     void MeshRenderer::Draw()
     {
+        s_Data.TerrainShader->Bind();
         // Set dynamic vertex buffer
         std::vector<float> vertices;
         vertices.reserve(s_Data.Mesh->numVertices * 8);
-
         for (size_t i = 0; i < s_Data.Mesh->numVertices; i++)
         {
             vertices.push_back(s_Data.Mesh->m_VerticesPos[i].x);
@@ -102,11 +174,13 @@ namespace GLCore
             vertices.push_back(s_Data.Mesh->m_TextureCoords[i].y);
         }
         s_Data.MeshVertexArray->Bind();
-        s_Data.MeshVertexBuffer->SetData(vertices.data(), vertices.size() * sizeof(float));
-
-
-        s_Data.MeshVertexArray->Bind();
+        s_Data.MeshVertexBuffer->SetData(vertices.data(), static_cast<uint32_t>(vertices.size() * sizeof(float)));
         glDrawElements(GL_TRIANGLES, s_Data.MeshIndexBuffer->GetCount(), GL_UNSIGNED_INT, nullptr);
+
+
+        s_Data.LightSourceShader->Bind();
+        s_Data.LightSourceVertexArray->Bind();
+        glDrawElements(GL_TRIANGLES, s_Data.LightSourceIndexBuffer->GetCount(), GL_UNSIGNED_INT, nullptr);
     }
 
     void MeshRenderer::RecomputeTerrainData()

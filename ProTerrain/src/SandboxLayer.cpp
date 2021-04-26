@@ -39,7 +39,7 @@ void SandboxLayer::OnUpdate(Timestep ts)
 {
     m_PerspectiveCamera.OnUpdate(ts);
 
-    glClearColor(0.12f, 0.82f, 0.98f, 1.0f);
+    glClearColor(0.12f, 0.12f, 0.12f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     MeshRenderer::BeginScene(m_PerspectiveCamera);

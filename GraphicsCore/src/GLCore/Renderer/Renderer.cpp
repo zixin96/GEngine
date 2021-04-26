@@ -25,7 +25,7 @@ namespace GLCore
         Ref<VertexArray> QuadVertexArray;
         Ref<VertexBuffer> QuadVertexBuffer;
         Ref<Texture2D> WhiteTexture; // White texture is used when we don't want to apply any textures
-        Ref<Shader> TextureShader;
+        Ref<Shader> TerrainShader;
         uint32_t QuadIndexCount = 0;
         QuadVertex* QuadVertexBufferBase = nullptr;
         QuadVertex* QuadVertexBufferPtr = nullptr;
@@ -89,11 +89,11 @@ namespace GLCore
             samplers[i] = i;
         }
 
-        s_Data.TextureShader = Shader::Create("test",
+        s_Data.TerrainShader = Shader::Create("test",
             Shader::ReadFileAsString("assets/shaders/test.vert.glsl"),
             Shader::ReadFileAsString("assets/shaders/test.frag.glsl"));
-        s_Data.TextureShader->Bind();
-        s_Data.TextureShader->SetIntArray("u_Textures", samplers, MaxTextureSlots);
+        s_Data.TerrainShader->Bind();
+        s_Data.TerrainShader->SetIntArray("u_Textures", samplers, MaxTextureSlots);
 
         s_Data.TextureSlots[0] = s_Data.WhiteTexture;
     }
@@ -237,16 +237,16 @@ namespace GLCore
 
     void Renderer::BeginScene(const OrthographicCamera& camera)
     {
-        s_Data.TextureShader->Bind();
-        s_Data.TextureShader->SetMat4("u_ViewProjection",
+        s_Data.TerrainShader->Bind();
+        s_Data.TerrainShader->SetMat4("u_ViewProjection",
             camera.GetViewProjectionMatrix());
     }
 
     void Renderer::BeginScene(const PerspectiveCamera& camera)
     {
         glm::mat4 viewProj = camera.GetViewProjection();
-        s_Data.TextureShader->Bind();
-        s_Data.TextureShader->SetMat4("u_ViewProjection",
+        s_Data.TerrainShader->Bind();
+        s_Data.TerrainShader->SetMat4("u_ViewProjection",
             viewProj);
     }
 }

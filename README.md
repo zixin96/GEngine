@@ -83,4 +83,8 @@ Ref: macro for shared pointers
 
 **Signed** perlin noise
 
+### TODO
+
+1. Recomputing noise map is very slow.
+
 
