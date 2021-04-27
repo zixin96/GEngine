@@ -1,6 +1,8 @@
-# GEngine 
+# Simulating Terrain
 
-This is a work-in-progress OpenGL platform I use to build graphics applications. 
+A procedurally generated terrain built upon my work-in-progress game engine. 
+
+![ProTerrainDemo](ProTerrainDemo.gif)
 
 ## Usage
 
@@ -10,13 +12,9 @@ C++ Version: **C++17**
 
 Currently only supports Windows, Visual Studio 2019. 
 
-1. Clone the repository: `git clone --recursive XXX`
+1. Clone the repository: `git clone --recursive https://github.com/zixin96/GEngine.git`
 2. Run `Scripts/Win-Premake.bat` - this will create `ProTerrain.sln` for procedural terrain and make sure everything is setup correctly
 3. Open `ProTerrain.sln` and build `Debug` `x64` - ProTerrain should be the startup project so really you can just hit `F5` to build and debug the startup project
-
-Open `SDF.sln` for SDF.
-
-Open `L-System`for L-System.
 
 ## Camera Control
 
@@ -24,42 +22,25 @@ Rotate: Alt + Left Mouse Button
 Pan: Alt + Middle Mouse Button
 Zoom: Mouse Scroll or Alt + Right Mouse Button 
 
-## Notes
+## Terminology
 
-- A **much** more elegant way to set buffer objects: NO MORE manually setting offsets and strides! 
-```c++
-Ref<VertexArray> vao;
-Ref<VertexBuffer> vbo;
-Ref<IndexBuffer> ebo;
+- Amplitude deals with y axis.
 
-vao = VertexArray::Create();
+- Frequency deals with x axis.
 
-// VBO Setup
-float vertices[] = 
-{ 
-    // vertex attributes data 
-};
-vbo = VertexBuffer::Create(sizeof(vertices), vertices);
-vbo->SetLayout({
-    { ShaderDataType::Float3, "a_Position"},
-    { ShaderDataType::Float4, "a_Color"}
-    // maybe more
-});
-vao->AddVertexBuffer(vbo);
+- Octave   
+    - Add details while preserving overall shape by layering(adding) multiple levels of noise. 
+    - Each level of the noise map is called an octave. 
 
-// EBO Setup
-uint32_t indices[] = 
-{ 
-    // indices data
-};
-ebo = IndexBuffer::Create(sizeof(indices) / sizeof(uint32_t),indices);
-vao->SetIndexBuffer(ebo);
-```
+- Lacunarity: controls increase in frequency of octaves. e.g 2. 
+    - Increasing L => Increasing # of small features
 
-Ref: macro for shared pointers
+- Persistance: controls decrease in amplitude of octaves (range from 0 to 1) e.g 0.5. 
+    - Affects how much these small features influence the overall shape of the map. 0: small features doesn't affect the terrain. 1: small features has large impact on the terrain
 
-- Creating static vbo: `VertexBuffer::Create(two arguments)`. dynamic vbo: `VertexBuffer::Create(single argument)`
+## Terrain
 
+Terrain is created using fractal Perlin Noise with 5 octaves. Normals are created using gradient method. Phong lighting model is used. 
 
 ## References
 
@@ -78,13 +59,12 @@ Ref: macro for shared pointers
 [4] scratchapixel. Procedural Generation of Virtual Worlds by Jean-Colas Prunier.
     https://www.scratchapixel.com/lessons/procedural-generation-virtual-worlds/procedural-patterns-noise-part-1
 
+###### TODO
 
-# ProTerrain
+1. Infinite terrain.
+2. Use ZEngine 
 
-**Signed** perlin noise
 
-### TODO
 
-1. Recomputing noise map is very slow.
 
 
