@@ -157,8 +157,8 @@ namespace GLCore
 
     void MeshRenderer::Draw()
     {
-        lightPos.x = 1.0f + sin(glfwGetTime()) * 20.0f;
-        lightPos.z = sin(glfwGetTime() / 2.0f) * 10.0f;
+        lightPos.x = 1.0f + sin(static_cast<float>(glfwGetTime())) * 20.0f;
+        lightPos.z = sin(static_cast<float>(glfwGetTime() / 2.0f)) * 10.0f;
 
         s_Data.TerrainShader->Bind();
         s_Data.TerrainShader->SetVec3("u_ViewPos",
