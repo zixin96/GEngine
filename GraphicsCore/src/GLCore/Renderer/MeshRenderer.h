@@ -9,15 +9,15 @@ namespace GLCore
     public:
         static void Init();
         static void Shutdown();
-        static void BeginScene(const PerspectiveCamera& camera);
+        static void BeginScene(PerspectiveCamera& camera);
 
         static void Draw();
         static void RecomputeTerrainData();
 
         struct TerrainStats
         {
-            float Lacunarity = 5.0f;
-            float Persistance = 0.5f;
+            float Lacunarity = 2.5f;
+            float Persistance = 0.35f;
         };
 
         static TerrainStats& GetTerrainStats();

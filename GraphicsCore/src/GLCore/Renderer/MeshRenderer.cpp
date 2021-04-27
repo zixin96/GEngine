@@ -11,7 +11,7 @@
 namespace GLCore
 {
     const glm::vec4 lightColor{ 1.0f, 1.0f, 1.0f, 1.0f };
-    const glm::vec3 lightPos{ 5.0f, 20.0f, 5.0f };
+    glm::vec3 lightPos{ 5.0f, 20.0f, 5.0f };
 
     struct MeshVertex
     {
@@ -41,6 +41,9 @@ namespace GLCore
         Ref<VertexBuffer> LightSourceVertexBuffer;
         Ref<IndexBuffer> LightSourceIndexBuffer;
         Ref<Shader> LightSourceShader;
+
+
+        PerspectiveCamera* Cam;
     };
 
     static RendererData s_Data;
@@ -48,7 +51,7 @@ namespace GLCore
     void MeshRenderer::Init()
     {
         // Initialize mesh and noise map
-        s_Data.Mesh = new PolyMesh(5, 5, 100, 100);
+        s_Data.Mesh = new PolyMesh(5, 5, 200, 200);
         int seed = 1996;
         s_Data.Noise = PerlinNoise(seed);
         s_Data.NoiseMap = new float[s_Data.NoiseMapWidth * s_Data.NoiseMapHeight]{ 0 };
@@ -127,8 +130,9 @@ namespace GLCore
         delete[] s_Data.NoiseMap;
     }
 
-    void MeshRenderer::BeginScene(const PerspectiveCamera& camera)
+    void MeshRenderer::BeginScene(PerspectiveCamera& camera)
     {
+        s_Data.Cam = &camera;
         s_Data.TerrainShader->Bind();
         glm::mat4 viewProj = camera.GetViewProjection();
         s_Data.TerrainShader->SetMat4("u_ViewProjection",
@@ -141,22 +145,26 @@ namespace GLCore
             changing);
         s_Data.TerrainShader->SetVec4("u_LightColor",
             lightColor);
-        s_Data.TerrainShader->SetVec3("u_LightPos",
-            lightPos);
-
+   
 
         s_Data.LightSourceShader->Bind();
         s_Data.LightSourceShader->SetMat4("u_ViewProjection",
             viewProj);
-        s_Data.LightSourceShader->SetMat4("u_Model",
-            glm::translate(glm::mat4(1.0f), lightPos) * glm::scale(glm::mat4(1.0f), glm::vec3(1.0f)));
+      
         s_Data.LightSourceShader->SetVec4("u_LightColor",
             lightColor);
     }
 
     void MeshRenderer::Draw()
     {
+        lightPos.x = 1.0f + sin(glfwGetTime()) * 20.0f;
+        lightPos.z = sin(glfwGetTime() / 2.0f) * 10.0f;
+
         s_Data.TerrainShader->Bind();
+        s_Data.TerrainShader->SetVec3("u_ViewPos",
+            s_Data.Cam->GetPosition());
+        s_Data.TerrainShader->SetVec3("u_LightPos",
+            lightPos);
         // Set dynamic vertex buffer
         std::vector<float> vertices;
         vertices.reserve(s_Data.Mesh->numVertices * 8);
@@ -179,6 +187,8 @@ namespace GLCore
 
 
         s_Data.LightSourceShader->Bind();
+        s_Data.LightSourceShader->SetMat4("u_Model",
+            glm::translate(glm::mat4(1.0f), lightPos) * glm::scale(glm::mat4(1.0f), glm::vec3(1.0f)));
         s_Data.LightSourceVertexArray->Bind();
         glDrawElements(GL_TRIANGLES, s_Data.LightSourceIndexBuffer->GetCount(), GL_UNSIGNED_INT, nullptr);
     }

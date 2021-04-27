@@ -10,6 +10,7 @@ in vec3 fs_Pos;
 uniform float u_Changing;
 uniform vec4 u_LightColor;
 uniform vec3 u_LightPos;
+uniform vec3 u_ViewPos;
 
 void main()
 {
@@ -45,12 +46,23 @@ void main()
 	else {
 		terrainColor = mix(vec4(1.0, 1.0, 1.0, 1.0), vec4(0.40, 0.29, 0.10, 1.0), u_Changing);
 	}
-	vec3 norm = normalize(fs_Normal);
-	vec3 lightDir = normalize(u_LightPos - fs_Pos);
-	vec3 diffuse =  max(dot(norm, lightDir), 0.0) * u_LightColor.xyz;
+	 // ambient
+    float ambientStrength = 0.4;
+    vec3 ambient = ambientStrength * u_LightColor.xyz;    
+    
+     // diffuse 
+    vec3 norm = normalize(fs_Normal);
+    vec3 lightDir = normalize(u_LightPos - fs_Pos);
+    float diff = max(dot(norm, lightDir), 0.0);
+    vec3 diffuse = diff * u_LightColor.xyz;
+    
+    // specular
+    float specularStrength = 0.5;
+    vec3 viewDir = normalize(u_ViewPos - fs_Pos); // the viewer is always at (0,0,0) in view-space, so viewDir is (0,0,0) - Position => -Position
+    vec3 reflectDir = reflect(-lightDir, norm);  
+    float spec = pow(max(dot(viewDir, reflectDir), 0.0), 32);
+    vec3 specular = specularStrength * spec * u_LightColor.xyz; 
 
-	float ambientStrength = 0.1;
-	vec3 ambient = ambientStrength * u_LightColor.xyz;
-
-	o_Color = terrainColor * vec4(ambient + diffuse, 1.0);
+	vec3 result = (ambient + diffuse + specular) * terrainColor.xyz;
+	o_Color = vec4(result, 1.0);
 }

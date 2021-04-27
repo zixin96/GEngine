@@ -15,7 +15,7 @@ out vec3 fs_Pos;
 void main()
 {
 	gl_Position = u_ViewProjection * u_Model * vec4(a_Position, 1.0f);
-	fs_Normal = a_Normal;
+	fs_Normal = mat3(transpose(inverse(u_Model))) * a_Normal;
 	fs_TexCoord = a_TexCoord;
 	fs_Height = a_Position.y;
 	fs_Pos = vec3(u_Model * vec4(a_Position, 1.0));
