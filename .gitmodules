@@ -8,5 +8,6 @@
 	path = GraphicsCore/vendor/glm
 	url = https://github.com/g-truc/glm.git
 [submodule ".\\GraphicsCore\\vendor\\imgui"]
-	path = GraphicsCore/vendor/mgui
+	path = GraphicsCore/vendor/imgui
 	url = https://github.com/zixin96/imgui.git
+     	branch = docking
