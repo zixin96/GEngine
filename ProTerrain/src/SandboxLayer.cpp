@@ -58,5 +58,8 @@ void SandboxLayer::OnImGuiRender()
      {
          MeshRenderer::RecomputeTerrainData();
      }
+     ImGui::Text("Rotate: Alt + Left Mouse Button");
+     ImGui::Text("Pan: Alt + Middle Mouse Button");
+     ImGui::Text("Zoom: Mouse Scroll or Alt + Right Mouse Button");
      ImGui::End();
 }
