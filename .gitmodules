@@ -10,4 +10,3 @@
 [submodule ".\\GraphicsCore\\vendor\\imgui"]
 	path = GraphicsCore/vendor/imgui
 	url = https://github.com/zixin96/imgui.git
-     	branch = docking
