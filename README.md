@@ -12,14 +12,16 @@ C++ Version: **C++17**
 
 Currently only supports Windows, Visual Studio 2019. 
 
-1. Clone the repository: `git clone --recursive https://github.com/zixin96/GEngine.git`
-2. Run `Scripts/Win-Premake.bat` - this will create `ProTerrain.sln` for procedural terrain and make sure everything is setup correctly
-3. Open `ProTerrain.sln` and build `Debug` `x64` - ProTerrain should be the startup project so really you can just hit `F5` to build and debug the startup project
+1. `git clone --recursive https://github.com/zixin96/GEngine.git`
+2. Run `Scripts/Win-Premake.bat` - this will create `ProTerrain.sln` for procedural terrain
+3. Open `ProTerrain.sln` and build `Debug` `x64` - ProTerrain should be the startup project
 
 ## Camera Control
 
 Rotate: Alt + Left Mouse Button
+
 Pan: Alt + Middle Mouse Button
+
 Zoom: Mouse Scroll or Alt + Right Mouse Button 
 
 ## Terminology
@@ -38,9 +40,11 @@ Zoom: Mouse Scroll or Alt + Right Mouse Button
 - Persistance: controls decrease in amplitude of octaves (range from 0 to 1) e.g 0.5. 
     - Affects how much these small features influence the overall shape of the map. 0: small features doesn't affect the terrain. 1: small features has large impact on the terrain
 
-## Terrain
+## Features
 
-Terrain is created using fractal Perlin Noise with 5 octaves. Normals are created using gradient method. Phong lighting model is used. 
+- Shading is based on Phong light model
+- Perlin noise is based on *Improving Noise*. Ken Perlin (2002)
+- Terrain mesh is created by a fractal pattern which is constructed as a weighted sum of 5 noise layers. 
 
 ## References
 
